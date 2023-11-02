@@ -83,9 +83,7 @@ protected:
     Lit     data[0];
     #endif //_MSC_VER
 
-#ifdef _MSC_VER
 public:
-#endif //_MSC_VER
     template<class V>
     Clause(const V& ps, const uint _group, const bool learnt)
     {
@@ -114,8 +112,8 @@ public:
     #ifndef _MSC_VER
     // -- use this function instead:
     template<class T>
-    friend Clause* Clause_new(const T& ps, const uint group, const bool learnt = false);
-    friend Clause* Clause_new(Clause& c);
+    Clause* Clause_new(const T& ps, const uint group, const bool learnt = false);
+    Clause* Clause_new(Clause& c);
     #endif //_MSC_VER
 
     const uint   size        ()      const {

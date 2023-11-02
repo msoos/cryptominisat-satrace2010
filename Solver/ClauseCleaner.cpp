@@ -381,7 +381,7 @@ bool ClauseCleaner::satisfied(const Clause& c) const
     for (uint i = 0; i != c.size(); i++)
         if (solver.value(c[i]) == l_True)
             return true;
-        return false;
+    return false;
 }
 
 bool ClauseCleaner::satisfied(const XorClause& c) const

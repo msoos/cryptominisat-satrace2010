@@ -210,7 +210,7 @@ public:
         
         for(uint32_t i = var; i != size*64; i++)
             if (this->operator[](i)) return i;
-            return std::numeric_limits<unsigned long int>::max();
+        return std::numeric_limits<unsigned long int>::max();
     }
 
     friend std::ostream& operator << (std::ostream& os, const PackedRow& m);

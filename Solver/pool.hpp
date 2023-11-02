@@ -27,9 +27,9 @@
 #include "poolfwd.hpp"
 
 // boost::details::pool::ct_lcm
-#include <boost/pool/detail/ct_gcd_lcm.hpp>
+#include <boost/integer/common_factor.hpp>
 // boost::details::pool::lcm
-#include <boost/pool/detail/gcd_lcm.hpp>
+#include <boost/integer/common_factor_ct.hpp>
 // boost::simple_segregated_storage
 #include <boost/pool/simple_segregated_storage.hpp>
 
@@ -91,7 +91,7 @@ class PODptr
     char * ptr_next_ptr() const
     {
       return (ptr_next_size() -
-          pool::ct_lcm<sizeof(size_type), sizeof(void *)>::value);
+          boost::integer::static_lcm<sizeof(size_type), sizeof(void *)>::value);
     }
 
   public:
@@ -109,7 +109,7 @@ class PODptr
     size_type element_size() const
     {
       return (sz - sizeof(size_type) -
-          pool::ct_lcm<sizeof(size_type), sizeof(void *)>::value);
+          boost::integer::static_lcm<sizeof(size_type), sizeof(void *)>::value);
     }
 
     size_type & next_size() const
@@ -139,7 +139,7 @@ class pool: protected simple_segregated_storage<
 
   private:
     BOOST_STATIC_CONSTANT(unsigned, min_alloc_size =
-        (::boost::details::pool::ct_lcm<sizeof(void *), sizeof(size_type)>::value) );
+        (::boost::integer::static_lcm<sizeof(void *), sizeof(size_type)>::value) );
 
     // Returns 0 if out-of-memory
     // Called if malloc/ordered_malloc needs to resize the free list
@@ -181,7 +181,7 @@ class pool: protected simple_segregated_storage<
     size_type alloc_size() const
     {
       const unsigned min_size = min_alloc_size;
-      return details::pool::lcm<size_type>(requested_size, min_size);
+      return boost::integer::lcm<size_type>(requested_size, min_size);
     }
 
     // for the sake of code readability :)
@@ -433,7 +433,7 @@ void * pool<UserAllocator>::malloc_need_resize()
   // No memory in any of our storages; make a new storage,
   const size_type partition_size = alloc_size();
   const size_type POD_size = next_size * partition_size +
-      details::pool::ct_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
+      boost::integer::static_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
   char * const ptr = UserAllocator::malloc(POD_size);
   if (ptr == 0)
     return 0;
@@ -457,7 +457,7 @@ void * pool<UserAllocator>::ordered_malloc_need_resize()
   // No memory in any of our storages; make a new storage,
   const size_type partition_size = alloc_size();
   const size_type POD_size = next_size * partition_size +
-      details::pool::ct_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
+      boost::integer::static_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
   char * const ptr = UserAllocator::malloc(POD_size);
   if (ptr == 0)
     return 0;
@@ -517,7 +517,7 @@ void * pool<UserAllocator>::ordered_malloc(const size_type n)
   BOOST_USING_STD_MAX();
   next_size = max BOOST_PREVENT_MACRO_SUBSTITUTION(next_size, num_chunks);
   const size_type POD_size = next_size * partition_size +
-      details::pool::ct_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
+      boost::integer::static_lcm<sizeof(size_type), sizeof(void *)>::value + sizeof(size_type);
   char * const ptr = UserAllocator::malloc(POD_size);
   if (ptr == 0)
     return 0;
